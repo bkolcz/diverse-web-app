@@ -13,6 +13,7 @@ class MessageFileService implements MessageServiceInterface
 {
     const DATE_FORMAT = 'Ymdhisv';
     const MESSAGE_FILENAME_FORMAT = '/(?<uuid>\w{8}(?:-\w{4}){3}-\w{12}).(?<time>\d{17}).(?<ext>json)/';
+    const MESSAGE_KEY_FORMAT = '/(?<uuid>\w{8}(?:-\w{4}){3}-\w{12}).(?<time>\d{17})/';
 
     public function __construct(
         private ContainerBagInterface $params,
@@ -57,7 +58,7 @@ class MessageFileService implements MessageServiceInterface
         $found = $this->finder->files()->name(self::MESSAGE_FILENAME_FORMAT)->in($this->params->get('message_storage'));
         $result = [];
         foreach ($found as $file) {
-            array_push($result, $file->getFilename());
+            $result[$file->getFilenameWithoutExtension()] = json_decode($file->getContents());
         }
         return $result;
     }
@@ -70,10 +71,68 @@ class MessageFileService implements MessageServiceInterface
                 array_push($result, $file->getFilename());
             }
         }
-        return $result; // TODO check should be 1 result only
+        return $result;
     }
+
     public function sort(array $messageList, string $by, string $order): array
     {
-        return array_merge($messageList, [$by, $order]); // TODO sorting alg
+        uksort($messageList, match(true) { 
+            $by === 'name' && $order === 'asc' => [self::class, "uuidComparator"],
+            $by === 'name' && $order === 'desc' => [self::class, "uuidReverseComparator"],
+            $by === 'date' && $order === 'asc' => [self::class, "dateComparator"],
+            $by === 'date' && $order === 'desc' => [self::class, "dateReverseComparator"],
+            default => [self::class, "uuidComparator"],
+        });
+        return $messageList;
+    }
+
+    private static function uuidComparator($a, $b)
+    {
+        $aMatches = [];
+        $bMatches = [];
+        if (
+            preg_match(self::MESSAGE_KEY_FORMAT, $a, $aMatches) &&
+            preg_match(self::MESSAGE_KEY_FORMAT, $b, $bMatches)
+        ) {
+            return $aMatches['uuid'] <=> $bMatches['uuid'];
+        }
+        return 0;
+    }
+    private static function dateComparator($a, $b)
+    {
+        $aMatches = [];
+        $bMatches = [];
+        if (
+            preg_match(self::MESSAGE_KEY_FORMAT, $a, $aMatches) &&
+            preg_match(self::MESSAGE_KEY_FORMAT, $b, $bMatches)
+        ) {
+            return $aMatches['time'] <=> $bMatches['time'];
+        }
+        return 0;
+    }
+
+    private static function uuidReverseComparator($a, $b)
+    {
+        $aMatches = [];
+        $bMatches = [];
+        if (
+            preg_match(self::MESSAGE_KEY_FORMAT, $a, $aMatches) &&
+            preg_match(self::MESSAGE_KEY_FORMAT, $b, $bMatches)
+        ) {
+            return $bMatches['uuid'] <=> $aMatches['uuid'];
+        }
+        return 0;
+    }
+    private static function dateReverseComparator($a, $b)
+    {
+        $aMatches = [];
+        $bMatches = [];
+        if (
+            preg_match(self::MESSAGE_KEY_FORMAT, $a, $aMatches) &&
+            preg_match(self::MESSAGE_KEY_FORMAT, $b, $bMatches)
+        ) {
+            return $bMatches['time'] <=> $aMatches['time'];
+        }
+        return 0;
     }
 }
