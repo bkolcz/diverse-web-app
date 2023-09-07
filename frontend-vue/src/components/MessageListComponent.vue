@@ -1,22 +1,27 @@
+<script setup lang="ts">
+import MessageModalComponent from '@/components/MessageModalComponent.vue';
+// TODO modal
+</script>
 <template>
     <table>
-        <!-- <select name="by" id="by">
-            <option v-for="byOption in byOptions" value={{ byOption?.k }}>{{ byOption?.v }}</option>
+        <select name="by" id="by" @change="changeBy($event)">
+            <option v-for="byOption in byOptions" :value=byOption?.k>{{ byOption?.v }}</option>
         </select>
-        <select name="order" id="order">
-            <option v-for="OrderOption in orderOptions" value={{ OrderOption?.k }}>{{ OrderOption?.v }}</option>
-        </select> -->
+        <select name="order" id="order" @change="changeOrder($event)">
+            <option v-for="orderOption in orderOptions" :value=orderOption?.k>{{ orderOption?.v }}</option>
+        </select>
         <tr>
             <th>UUID</th>
             <th>Created at</th>
             <th>Message</th>
         </tr>
-        <tr v-for="item in messages">
+        <tr v-for="item in messages" @click="openModal(item?.uuid)">
             <td>{{ item?.uuid }}</td>
             <td>{{ item?.created }}</td>
             <td>{{ item?.message }}</td>
         </tr>
     </table>
+    <div id="modal"></div>
 </template>
 
 <script lang="ts">
@@ -36,28 +41,45 @@ type ListOption = {
 }
 
 type MessageListComponent = {
+    open: boolean,
+    uuid: string,
     by: string,
     order: string,
-    messages: Row[]
-    byOptions: ListOption[]
-    orderOptions: ListOption[]
+    messages: Row[],
+    byOptions: ListOption[],
+    orderOptions: ListOption[],
 };
 
 export default defineComponent({
     props: {},
     data(): MessageListComponent {
         return {
+            open: false,
+            uuid: "",
             by: "name",
-            order: "desc",
+            order: "asc",
             messages: [],
-            byOptions: [{k: "name", v: "Name"}, {k: "date", v: "Date"}],
-            orderOptions: [{k: "asc", v: "Ascending"}, {k: "desc", v: "Descending"}],
+            byOptions: [
+                { k: "name", v: "Name" },
+                { k: "date", v: "Date" },
+            ],
+            orderOptions: [
+                { k: "asc", v: "Ascending" },
+                { k: "desc", v: "Descending" },
+            ],
         }
     },
     mounted() {
     },
     created() {
         this.getAll();
+    },
+    updated() {
+    },
+    watch: {
+        'messages': () => {},
+        'open': () => {},
+        'uuid': () => {},
     },
     methods: {
         async getAll(): Promise<void> {
@@ -73,7 +95,22 @@ export default defineComponent({
                 })
             }
             this.messages = messages;
-        }
+        },
+
+        changeBy(event: Event) {
+            this.by = (event.target as HTMLDataElement).value??"name";
+            this.getAll();
+        },
+
+        changeOrder(event: Event) {
+            this.order = (event.target as HTMLDataElement).value??"asc";
+            this.getAll();
+        },
+        openModal(uuid: string) {
+            console.log(uuid);
+            this.uuid = uuid;
+            // TODO popup modal
+        },
     }
 });
 </script>

@@ -68,7 +68,8 @@ class MessageFileService implements MessageServiceInterface
         $result = [];
         if ($this->finder->hasResults()) {
             foreach ($found as $file) {
-                array_push($result, $file->getFilename());
+                $result[$file->getFilenameWithoutExtension()] = json_decode($file->getContents());
+                break;
             }
         }
         return $result;
