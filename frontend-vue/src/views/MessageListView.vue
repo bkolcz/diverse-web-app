@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import MessageComponent from '@/components/MessageComponent.vue';
+import MessageListComponent from '@/components/MessageListComponent.vue';
 </script>
 
 <template>
   <main>
-    <MessageComponent />
+    <MessageListComponent />
   </main>
 </template>
