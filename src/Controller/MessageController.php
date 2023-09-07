@@ -16,9 +16,14 @@ class MessageController extends AbstractController
     }
 
     #[Route('', name: 'app_message', methods: ['GET'])]
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return $this->json($this->messageService->getAll());
+        $response = $this->messageService->sort(
+            $this->messageService->getAll(),
+            $request->query->get('by') ?? '',
+            $request->query->get('order') ?? ''
+        );
+        return $this->json($response);
     }
 
     #[Route('', name: 'app_message_save', methods: ['POST'])]

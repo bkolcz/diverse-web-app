@@ -8,4 +8,5 @@
 /var/
 /vendor/
 /html/
+/storage/
 ###< symfony/framework-bundle ###
