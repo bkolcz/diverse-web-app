@@ -1,15 +1,12 @@
 version: '3'
 
-services:
-  apache:
-    container_name: symfony-api
-    image: php:8.2-apache
-    ports:
-      - "5000:80"
-    volumes:
-      - .:/var/www/
-      - ./public:/var/www/html/
-    
+services:  
   php:
     container_name: php82
     image: php:8.2-fpm-alpine3.17
+
+  web:
+    build: .
+    container_name: symfony-api
+    ports:
+      - "8000:80"

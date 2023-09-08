@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  frontend:
+    build: ./frontend-vue/
+    container_name: web_frontend
+    ports:
+      - "8001:80"
+
+  backend:
+    build: ./backend-symfony/
+    container_name: web_backend
+    ports:
+      - "8000:80"
