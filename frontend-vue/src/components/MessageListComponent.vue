@@ -2,27 +2,36 @@
 import MessageModalComponent from '@/components/MessageModalComponent.vue';
 </script>
 <template>
-    <table>
-        <select name="by" id="by" @change="changeBy($event)">
+    <div class="container">
+        <select name="by" id="by" @change="changeBy($event)" class="form-select m-3">
             <option v-for="byOption in byOptions" :value=byOption?.k>{{ byOption?.v }}</option>
         </select>
-        <select name="order" id="order" @change="changeOrder($event)">
+        <select name="order" id="order" @change="changeOrder($event)" class="form-select m-3">
             <option v-for="orderOption in orderOptions" :value=orderOption?.k>{{ orderOption?.v }}</option>
         </select>
-        <tr>
-            <th>UUID</th>
-            <th>Created at</th>
-            <th>Message</th>
-            <th>Actions</th>
-        </tr>
-        <tr v-for="item in messages">
-            <td>{{ item?.uuid }}</td>
-            <td>{{ item?.created }}</td>
-            <td>{{ item?.message }}</td>
-            <td><MessageModalComponent :uuid="item?.uuid"/></td>
-        </tr>
+    </div>
+    <div class="container">
+        <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">UUID</th>
+                <th scope="col">Created at</th>
+                <th scope="col">Message</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="item in messages">
+                <td scope="row">{{ item?.uuid }}</td>
+                <td>{{ item?.created }}</td>
+                <td>{{ item?.message }}</td>
+                <td>
+                    <MessageModalComponent :uuid="item?.uuid" />
+                </td>
+            </tr>
+        </tbody>
     </table>
-    <div id="modal"></div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -78,9 +87,9 @@ export default defineComponent({
     updated() {
     },
     watch: {
-        'messages': () => {},
-        'open': () => {},
-        'uuid': () => {},
+        'messages': () => { },
+        'open': () => { },
+        'uuid': () => { },
     },
     methods: {
         async getAll(): Promise<void> {
@@ -99,12 +108,12 @@ export default defineComponent({
         },
 
         changeBy(event: Event) {
-            this.by = (event.target as HTMLDataElement).value??"name";
+            this.by = (event.target as HTMLDataElement).value ?? "name";
             this.getAll();
         },
 
         changeOrder(event: Event) {
-            this.order = (event.target as HTMLDataElement).value??"asc";
+            this.order = (event.target as HTMLDataElement).value ?? "asc";
             this.getAll();
         },
     }

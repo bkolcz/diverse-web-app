@@ -1,32 +1,38 @@
 <template>
-  <button @click="openModal($event)">Show</button>
+  <button @click="openModal($event)" class="btn btn-info">Show</button>
   <Teleport to="body">
-    <div v-if="isOpen" class="modal">
-      <table>
+    <div v-if="isOpen" class="modal-message">
+      <table class="table">
         <tr>
           <th>UUID</th>
-          <th>Created at</th>
-          <th>Message</th>
+          <td>{{ row?.uuid }}</td>
         </tr>
         <tr>
-          <td>{{ row?.uuid }}</td>
+          <th>Created at</th>
           <td>{{ row?.created }}</td>
+        </tr>
+        <tr>
+          <th>Message</th>
           <td>{{ row?.message }}</td>
         </tr>
       </table>
-      <button @click="closeModal($event)">Close</button>
+      <button @click="closeModal($event)" class="btn btn-primary">Close</button>
     </div>
   </Teleport>
 </template>
 
 <style scoped>
-.modal {
+.modal-message {
   position: fixed;
   z-index: 999;
-  top: 20%;
-  left: 50%;
-  width: 300px;
+  top: 20vh;
+  left: 45%;
+  width: 50vh;
   margin-left: -150px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 1em;
 }
 </style>
 <script lang="ts">
@@ -60,10 +66,10 @@ export default defineComponent({
     }
   },
   created() {
-    this.getItem(this.uuid??"");
+    this.getItem(this.uuid ?? "");
   },
   watch: {
-    'isOpen': () => {},
+    'isOpen': () => { },
   },
   methods: {
     openModal(event: Event) {

@@ -2,11 +2,15 @@
 </script>
 
 <template>
-  <form v-on:submit.prevent="addMessage">
-    <label for="message-content">Message</label>
-    <textarea name="message-content" id="message-content" cols="30" rows="10" required v-model="message"></textarea>
-    <button type="submit">Add message</button>
+  <div class="container">
+    <form v-on:submit.prevent="addMessage">
+    <div class="form-group">
+      <label for="message-content" class="col-form-label">Message</label>
+      <textarea name="message-content" id="message-content" cols="30" rows="10" class="form-control" required v-model="message"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Add message</button>
   </form>
+  </div>
 </template>
 
 <script lang="ts">
