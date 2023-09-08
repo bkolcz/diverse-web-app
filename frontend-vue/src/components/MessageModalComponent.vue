@@ -1,9 +1,19 @@
 <template>
+  <button @click="openModal($event)">Show</button>
   <Teleport to="body">
-    <div v-if="openModal" class="modal">
-      <p>{{ row?.uuid }}</p>
-      <p>{{ row?.created }}</p>
-      <p>{{ row?.message }}</p>
+    <div v-if="isOpen" class="modal">
+      <table>
+        <tr>
+          <th>UUID</th>
+          <th>Created at</th>
+          <th>Message</th>
+        </tr>
+        <tr>
+          <td>{{ row?.uuid }}</td>
+          <td>{{ row?.created }}</td>
+          <td>{{ row?.message }}</td>
+        </tr>
+      </table>
       <button @click="closeModal($event)">Close</button>
     </div>
   </Teleport>
@@ -31,7 +41,7 @@ type Row = {
 }
 
 type MessageModal = {
-  openModal: boolean,
+  isOpen: boolean,
   row: Row
 }
 
@@ -41,7 +51,7 @@ export default defineComponent({
   },
   data(): MessageModal {
     return {
-      openModal: false,
+      isOpen: false,
       row: {
         uuid: "",
         created: "",
@@ -51,14 +61,16 @@ export default defineComponent({
   },
   created() {
     this.getItem(this.uuid??"");
-    this.openModal = true;
   },
   watch: {
-    'openModal': () => {},
+    'isOpen': () => {},
   },
   methods: {
+    openModal(event: Event) {
+      this.isOpen = true;
+    },
     closeModal(event: Event) {
-      this.openModal = false;
+      this.isOpen = false;
     },
     async getItem(uuid: string): Promise<void> {
       const response = (await axios.get(`${MessageApi.message}/${uuid}`)).data;

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import MessageModalComponent from '@/components/MessageModalComponent.vue';
-// TODO modal
 </script>
 <template>
     <table>
@@ -14,11 +13,13 @@ import MessageModalComponent from '@/components/MessageModalComponent.vue';
             <th>UUID</th>
             <th>Created at</th>
             <th>Message</th>
+            <th>Actions</th>
         </tr>
-        <tr v-for="item in messages" @click="openModal(item?.uuid)">
+        <tr v-for="item in messages">
             <td>{{ item?.uuid }}</td>
             <td>{{ item?.created }}</td>
             <td>{{ item?.message }}</td>
+            <td><MessageModalComponent :uuid="item?.uuid"/></td>
         </tr>
     </table>
     <div id="modal"></div>
@@ -105,11 +106,6 @@ export default defineComponent({
         changeOrder(event: Event) {
             this.order = (event.target as HTMLDataElement).value??"asc";
             this.getAll();
-        },
-        openModal(uuid: string) {
-            console.log(uuid);
-            this.uuid = uuid;
-            // TODO popup modal
         },
     }
 });
