@@ -4,6 +4,6 @@ import MessageListComponent from '@/components/MessageListComponent.vue';
 
 <template>
   <main>
-    <MessageListComponent />
+    <MessageListComponent/>
   </main>
 </template>

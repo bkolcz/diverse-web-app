@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    container_name: diverse-web-app-vue
+    ports: 
+      - "8001:80"

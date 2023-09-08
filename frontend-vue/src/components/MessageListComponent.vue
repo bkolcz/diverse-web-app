@@ -61,7 +61,6 @@ type MessageListComponent = {
 };
 
 export default defineComponent({
-    props: {},
     data(): MessageListComponent {
         return {
             open: false,
